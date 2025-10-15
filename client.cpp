@@ -54,9 +54,18 @@ int main(){
         cout<<"Connected to the server !"<<endl;
     }
 
-    string msg;
-    cout << "Enter message: ";
-    getline(cin, msg);
-    send(clientSocket, msg.c_str(), msg.size() + 1, 0);
+    char buffer[512];
+    bool flag = true;
+
+    while(flag){
+        string msg;
+        cout << "Enter message: ";
+        getline(cin, msg);
+        if(msg == "exit")flag = false;
+        send(clientSocket, msg.c_str(), msg.size() + 1, 0);
+
+        recv(clientSocket, buffer, sizeof(buffer), 0);
+            cout << "Client says: " << buffer << endl;
+    }
 
 }

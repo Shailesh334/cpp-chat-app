@@ -2,19 +2,20 @@
 #include<string>
 #include<winsock2.h>
 #include<ws2tcpip.h>
+#include<vector>
+#include<map>
+#include<thread>
+
 
 
 
 using namespace std;
 
-
-
-
-int main(){
-
-
-   //  ===============================================================   
-  //       1] Initializing the Winsock DLL  -- WSAStartup()
+vector<SOCKET> chatroom;
+map<SOCKET , string> mp;
+SOCKET acceptClient(){
+     //  ====================================================================   
+    //       1] Initializing the Winsock DLL  -- WSAStartup()
 
 
             WSADATA wsaData; // contains info about windows sockets implementation 
@@ -100,19 +101,71 @@ int main(){
    //       5] Accept the client  -- accept()  
 
    SOCKET clientSocket = accept(serverSocket , nullptr , nullptr);
+      
+   return clientSocket;
+}
 
-   if(clientSocket == INVALID_SOCKET){
-        cout<<"Connect() failed !"<<endl;
-   }
-   else{
-        cout<<"Client connected !"<<endl;
-   }
+void broadcast(string msg ,SOCKET sender){
+
+    for(auto i : chatroom){
+        if(msg == "exit"){
+            string m = mp[sender] + "left the chatroom..";
+            send(i )
+
+        }
+        if( i != sender){
+            send(i, msg.c_str(), msg.size() + 1, 0);
+        }
+    }
+}
+
+void handleClient(SOCKET clientSocket){
+
+    chatroom.push_back(clientSocket);
+    string name;
+    cout<<"Enter your username : ";
+    getline(cin , name);
+    mp[clientSocket] = name;
+    
+    string m = name + "joined !";
+   
 
     char buffer[512];
-    recv(clientSocket, buffer, sizeof(buffer), 0);
-    cout << "Client says: " << buffer << endl;
+    bool flag = true;
+    while(flag){
 
-    closesocket(clientSocket);
-    closesocket(serverSocket);
-    WSACleanup();
+         recv(clientSocket, buffer, sizeof(buffer), 0);
+         cout <<name <<":"<< buffer << endl;
+
+            string msg;
+            cout << name << ':';
+            getline(cin, msg);
+
+            broadcast(msg , clientSocket)
+            
+
+
+    }
+   
+
+}
+
+
+int main(){
+
+
+    SOCKET clientSocket = acceptClient();
+
+       if(clientSocket == INVALID_SOCKET){
+                cout<<"Connect() failed !"<<endl;
+        }
+        else{
+                cout<<"Client connected !"<<endl;
+        }
+
+        thread(handleClient , clientSocket).detach();
+
+   
+
+    
 }   
