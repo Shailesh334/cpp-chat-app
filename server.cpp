@@ -105,29 +105,29 @@ SOCKET acceptClient(){
    return clientSocket;
 }
 
-void broadcast(string msg ,SOCKET sender){
+// void broadcast(string msg ,SOCKET sender){
 
-    for(auto i : chatroom){
-        if(msg == "exit"){
-            string m = mp[sender] + "left the chatroom..";
-            send(i )
+//     for(auto i : chatroom){
+//         if(msg == "exit"){
+//             string m = mp[sender] + "left the chatroom..";
+//             send(i )
 
-        }
-        if( i != sender){
-            send(i, msg.c_str(), msg.size() + 1, 0);
-        }
-    }
-}
+//         }
+//         if( i != sender){
+//             send(i, msg.c_str(), msg.size() + 1, 0);
+//         }
+//     }
+// }
 
 void handleClient(SOCKET clientSocket){
 
-    chatroom.push_back(clientSocket);
-    string name;
-    cout<<"Enter your username : ";
-    getline(cin , name);
-    mp[clientSocket] = name;
+    // chatroom.push_back(clientSocket);
+    // string name;
+    // cout<<"Enter your username : ";
+    // getline(cin , name);
+    // mp[clientSocket] = name;
     
-    string m = name + "joined !";
+    // string m = name + "joined !";
    
 
     char buffer[512];
@@ -135,13 +135,13 @@ void handleClient(SOCKET clientSocket){
     while(flag){
 
          recv(clientSocket, buffer, sizeof(buffer), 0);
-         cout <<name <<":"<< buffer << endl;
+         cout <<"server " <<":"<< buffer << endl;
 
             string msg;
-            cout << name << ':';
+            cout << "client" << ':';
             getline(cin, msg);
-
-            broadcast(msg , clientSocket)
+             if(msg == "exit")flag = false;
+            send(clientSocket, msg.c_str(), msg.size() + 1, 0);
             
 
 
@@ -163,8 +163,8 @@ int main(){
                 cout<<"Client connected !"<<endl;
         }
 
-        thread(handleClient , clientSocket).detach();
-
+        
+        handleClient(clientSocket);
    
 
     

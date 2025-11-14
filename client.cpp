@@ -65,7 +65,7 @@ int main(){
         send(clientSocket, msg.c_str(), msg.size() + 1, 0);
 
         recv(clientSocket, buffer, sizeof(buffer), 0);
-            cout << "Client says: " << buffer << endl;
+        cout << "Client says: " << buffer << endl;
     }
 
 }
